@@ -85,7 +85,6 @@
       </div>
     </div>
 
-    <!-- Resultado final quando todas as notas estão preenchidas -->
     <div class="result" v-if="hasAllGrades">
       <h2>🎯 Sua Média Final</h2>
       <div class="final-grade">{{ finalGrade.toFixed(2) }}</div>
@@ -184,19 +183,16 @@ export default {
       return 0;
     },
     minAGForPass() {
-      // Mínimo na AG assumindo nota máxima na AF
       const maxAFPoints = 0.45 * 10;
       const pointsFromAG = Math.max(0, this.neededPoints - maxAFPoints);
       return pointsFromAG / 0.10;
     },
     minAFWithMinAG() {
-      // Nota necessária na AF se tirar o mínimo possível na AG
       const agPoints = 0.10 * this.minAGForPass;
       const neededFromAF = this.neededPoints - agPoints;
       return Math.max(0, neededFromAF / 0.45);
     },
     minAFWithMaxAG() {
-      // Nota necessária na AF se tirar 10 na AG
       const agPoints = 0.10 * 10;
       const neededFromAF = this.neededPoints - agPoints;
       return Math.max(0, neededFromAF / 0.45);

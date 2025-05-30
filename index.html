@@ -1,13 +1,128 @@
 <!doctype html>
-<html lang="">
+<html lang="pt-br">
   <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" href="/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Calculadora Facens</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#764ba2" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Calc Facens" />
+    <meta name="msapplication-TileColor" content="#667eea" />
+
+    <!-- Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Favicon -->
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImdyYWQiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiM2NjdlZWE7c3RvcC1vcGFjaXR5OjEiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiM3NjRiYTI7c3RvcC1vcGFjaXR5OjEiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48Y2lyY2xlIGN4PSIyNTYiIGN5PSIyNTYiIHI9IjI0MCIgZmlsbD0idXJsKCNncmFkKSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjE2Ii8+PHJlY3QgeD0iMTIwIiB5PSIxMjAiIHdpZHRoPSIyNzIiIGhlaWdodD0iODAiIHJ4PSIxMiIgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iMC45Ii8+PHRleHQgeD0iMzgwIiB5PSIxNzUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSI0OCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiMyZDM3NDgiIHRleHQtYW5jaG9yPSJlbmQiPjUuMDwvdGV4dD48L3N2Zz4="
+      type="image/svg+xml"
+    />
+
+    <!-- Apple Touch Icons -->
+    <link rel="apple-touch-icon" href="/icon.svg" />
+
+    <title>Calculadora Facens - Calcule sua média final</title>
+    <meta
+      name="description"
+      content="Calculadora de notas da Facens. Calcule sua média final com base nas avaliações AC1, AC2, AG e AF."
+    />
   </head>
   <body>
+    <noscript>
+      <strong
+        >Este aplicativo precisa do JavaScript para funcionar. Por favor, habilite o JavaScript no
+        seu navegador.</strong
+      >
+    </noscript>
     <div id="app"></div>
     <script type="module" src="/src/main.js"></script>
+
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker
+            .register('/sw.js')
+            .then((registration) => {
+              console.log('SW registrado com sucesso: ', registration)
+            })
+            .catch((registrationError) => {
+              console.log('Falha no registro do SW: ', registrationError)
+            })
+        })
+      }
+
+      let deferredPrompt
+
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault()
+        deferredPrompt = e
+        showInstallButton()
+      })
+
+      function showInstallButton() {
+        if (document.getElementById('install-button')) return
+
+        const installButton = document.createElement('button')
+        installButton.id = 'install-button'
+        installButton.innerHTML = '📱 Instalar App'
+        installButton.style.cssText = `
+          position: fixed;
+          bottom: 20px;
+          right: 20px;
+          background: linear-gradient(135deg, #667eea, #764ba2);
+          color: white;
+          border: none;
+          padding: 12px 20px;
+          border-radius: 25px;
+          cursor: pointer;
+          box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+          font-weight: 600;
+          z-index: 1000;
+          transition: all 0.3s ease;
+          font-size: 14px;
+        `
+
+        installButton.addEventListener('click', () => {
+          installButton.style.display = 'none'
+          if (deferredPrompt) {
+            deferredPrompt.prompt()
+            deferredPrompt.userChoice.then((choiceResult) => {
+              if (choiceResult.outcome === 'accepted') {
+                console.log('Usuário aceitou instalar o PWA')
+              } else {
+                console.log('Usuário recusou instalar o PWA')
+              }
+              deferredPrompt = null
+            })
+          }
+        })
+
+        installButton.addEventListener('mouseenter', () => {
+          installButton.style.transform = 'scale(1.05)'
+          installButton.style.boxShadow = '0 6px 20px rgba(102, 126, 234, 0.6)'
+        })
+
+        installButton.addEventListener('mouseleave', () => {
+          installButton.style.transform = 'scale(1)'
+          installButton.style.boxShadow = '0 4px 15px rgba(102, 126, 234, 0.4)'
+        })
+
+        document.body.appendChild(installButton)
+      }
+
+      window.addEventListener('appinstalled', (evt) => {
+        console.log('PWA foi instalado com sucesso!')
+        const installButton = document.getElementById('install-button')
+        if (installButton) {
+          installButton.remove()
+        }
+      })
+    </script>
   </body>
 </html>
