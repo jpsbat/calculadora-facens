@@ -136,7 +136,7 @@ export default {
       return (0.15 * this.ac1) + (0.30 * this.ac2) + (0.10 * this.ag) + (0.45 * this.af);
     },
     isApproved() {
-      return this.finalGrade >= 5.0;
+      return this.finalGrade >= 4.76;
     },
     hasAllGrades() {
       return this.ac1 !== '' && this.ac2 !== '' && this.ag !== '' && this.af !== '';
@@ -153,7 +153,7 @@ export default {
       return points;
     },
     neededPoints() {
-      return Math.max(0, 5.0 - this.currentPoints);
+      return Math.max(0, 4.76 - this.currentPoints);
     },
     missingGrades() {
       const missing = [];
